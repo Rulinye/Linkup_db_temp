@@ -1,0 +1,76 @@
+// ============================================================
+// Team LinkUp — DB Schema for dbdiagram.io
+// 사용법: https://dbdiagram.io/d 에 이 내용을 붙여넣기
+// ============================================================
+
+Table User_Profile {
+  id                    integer [pk, default: 1, note: '고정값 1 (로컬 단일 사용자)']
+  nickname              text    [note: '사용자 닉네임']
+  birth_year            integer [note: '출생 연도']
+  height_cm             real    [note: '키 (cm)']
+  weight_kg             real    [note: '체중 (kg)']
+  job_type              text    [not null, default: 'student', note: 'Enum: it/office_worker/student/manual_labor/other']
+  pain_points           text    [default: '', note: '통증 부위 (쉼표 구분). Enum BodyPart 값만 허용']
+  fitness_level         integer [not null, default: 3, note: '체력 자가평가 1(매우약함)~5(매우강함)']
+  preferred_duration_min integer [default: 10, note: '1회 운동 선호 시간 (분)']
+  daily_step_goal       integer [default: 8000, note: '일일 목표 걸음 수']
+  reminder_interval_min integer [default: 60, note: '장시간 앉아있기 알림 간격 (분)']
+  created_at            text    [note: '생성 시각']
+  updated_at            text    [note: '최종 수정 시각']
+}
+
+Table Exercise_Library {
+  ex_id             text    [pk, note: '동작 ID (예: EX_001)']
+  name              text    [not null, note: '동작 이름']
+  category          text    [not null, default: 'stretch', note: 'stretch/strength/cardio/relaxation/mobility']
+  target_muscle     text    [not null, note: '대상 근육군 (쉼표 구분)']
+  difficulty_level  integer [not null, default: 1, note: '난이도 1(낮음)~3(높음)']
+  contraindications text    [default: '', note: '금기 부위 (쉼표 구분). pain_points와 매칭하여 필터링']
+  modified_ex_id    text    [ref: > Exercise_Library.ex_id, note: '난이도 하향 대체 동작 ID (Self-Reference)']
+  suitable_scenes   text    [not null, default: 'office,home', note: '적합 장소 (쉼표 구분)']
+  default_sets      integer [default: 1, note: '기본 세트 수']
+  default_reps      integer [default: 1, note: '세트당 기본 횟수']
+  duration_sec      integer [not null, default: 30, note: '1회 동작 지속 시간 (초)']
+  description       text    [note: '동작 간단 설명']
+  instruction_steps text    [note: '단계별 안내 (JSON 배열)']
+  media_path        text    [note: '로컬 GIF/동영상 상대경로']
+}
+
+Table Daily_Log {
+  date          text    [pk, note: '날짜 (YYYY-MM-DD)']
+  sleep_hours   real    [note: '어젯밤 수면 시간']
+  step_count    integer [note: '오늘 걸음 수']
+  mood_score    integer [note: '오늘 컨디션 자가평가 1~5']
+  fatigue_score integer [note: '피로도 점수 1~10 (백엔드 계산 후 저장)']
+  manual_scene  text    [note: '운동 시 수동 선택 장소']
+  created_at    text    [note: '기록 생성 시각']
+}
+
+Table Workout_Session {
+  session_id      integer [pk, increment, note: '운동 세션 고유 ID']
+  date            text    [not null, ref: > Daily_Log.date, note: '세션 날짜']
+  started_at      text    [not null, note: '시작 시각 (HH:MM:SS)']
+  ended_at        text    [note: '종료 시각']
+  total_duration_sec integer [note: '실제 총 소요 시간 (초)']
+  scene           text    [note: '이번 운동 장소']
+  overall_feedback integer [note: '전체 난이도 피드백 -1/0/1']
+  is_completed    boolean [default: false, note: '전체 루틴 완료 여부']
+}
+
+Table Workout_History {
+  history_id        integer [pk, increment, note: '기록 고유 ID']
+  session_id        integer [not null, ref: > Workout_Session.session_id, note: '소속 세션']
+  ex_id             text    [not null, ref: > Exercise_Library.ex_id, note: '수행 동작 ID']
+  seq_order         integer [not null, note: '세션 내 수행 순서 (1,2,3...)']
+  actual_sets       integer [note: '실제 수행 세트 수']
+  actual_duration_sec integer [note: '실제 소요 시간 (초)']
+  is_completed      boolean [default: false, note: '해당 동작 완료 여부']
+  used_modified     boolean [default: false, note: '중간에 난이도 하향 전환 여부']
+  feedback          integer [note: '동작별 난이도 피드백 -1(어려움)/0(적당)/1(쉬움)']
+  pain_during       text    [default: '', note: '운동 중 발생한 통증 부위 (쉼표 구분)']
+}
+
+Table App_Settings {
+  key   text [pk, note: '설정 키 이름']
+  value text [not null, note: '설정 값']
+}

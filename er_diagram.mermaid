@@ -1,0 +1,77 @@
+erDiagram
+    User_Profile {
+        INTEGER id PK "DEFAULT 1"
+        TEXT nickname
+        INTEGER birth_year
+        REAL height_cm
+        REAL weight_kg
+        TEXT job_type "NOT NULL"
+        TEXT pain_points "comma-separated BodyPart"
+        INTEGER fitness_level "1~5"
+        INTEGER preferred_duration_min "DEFAULT 10"
+        INTEGER daily_step_goal "DEFAULT 8000"
+        INTEGER reminder_interval_min "DEFAULT 60"
+        TEXT created_at
+        TEXT updated_at
+    }
+
+    Exercise_Library {
+        TEXT ex_id PK "e.g. EX_001"
+        TEXT name "NOT NULL"
+        TEXT category "NOT NULL: stretch/strength/cardio/relaxation/mobility"
+        TEXT target_muscle "comma-separated"
+        INTEGER difficulty_level "1~3"
+        TEXT contraindications "comma-separated BodyPart"
+        TEXT modified_ex_id FK "self-ref: easier version"
+        TEXT suitable_scenes "comma-separated Scene"
+        INTEGER default_sets "DEFAULT 1"
+        INTEGER default_reps "DEFAULT 1"
+        INTEGER duration_sec "NOT NULL"
+        TEXT description
+        TEXT instruction_steps "JSON array"
+        TEXT media_path
+    }
+
+    Daily_Log {
+        TEXT date PK "YYYY-MM-DD"
+        REAL sleep_hours
+        INTEGER step_count
+        INTEGER mood_score "1~5"
+        INTEGER fatigue_score "1~10 calculated"
+        TEXT manual_scene
+        TEXT created_at
+    }
+
+    Workout_Session {
+        INTEGER session_id PK "AUTOINCREMENT"
+        TEXT date FK "-> Daily_Log"
+        TEXT started_at "HH:MM:SS"
+        TEXT ended_at
+        INTEGER total_duration_sec
+        TEXT scene
+        INTEGER overall_feedback "-1/0/1"
+        BOOLEAN is_completed "DEFAULT 0"
+    }
+
+    Workout_History {
+        INTEGER history_id PK "AUTOINCREMENT"
+        INTEGER session_id FK "-> Workout_Session"
+        TEXT ex_id FK "-> Exercise_Library"
+        INTEGER seq_order "NOT NULL"
+        INTEGER actual_sets
+        INTEGER actual_duration_sec
+        BOOLEAN is_completed "DEFAULT 0"
+        BOOLEAN used_modified "DEFAULT 0"
+        INTEGER feedback "-1/0/1"
+        TEXT pain_during "comma-separated BodyPart"
+    }
+
+    App_Settings {
+        TEXT key PK
+        TEXT value "NOT NULL"
+    }
+
+    Exercise_Library ||--o| Exercise_Library : "modified_ex_id (self-ref)"
+    Daily_Log ||--o{ Workout_Session : "date"
+    Workout_Session ||--o{ Workout_History : "session_id"
+    Exercise_Library ||--o{ Workout_History : "ex_id"
