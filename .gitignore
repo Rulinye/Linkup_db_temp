@@ -1,0 +1,10 @@
+# ignore SQLite file
+*.db
+*.sqlite3
+
+# python trash
+__pycache__/
+*.pyc
+
+# Mac system trash
+.DS_Store
