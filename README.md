@@ -265,22 +265,22 @@ App_Settings (독립 테이블, FK 없음)
 
 > 정적 데이터로 앱과 함께 배포됩니다. 현재 **44개 동작**이 등록되어 있습니다.
 
-| 컬럼 | 타입 | 제약 | 설명 |
-|------|------|------|------|
-| `ex_id` | TEXT | PK | 동작 고유 ID. 예: `'EX_001'` |
-| `name` | TEXT | NOT NULL | 동작 이름. 예: `'목 전방 굴곡 스트레칭'` |
-| `category` | TEXT | NOT NULL, CHECK | **운동 분류**. `ExerciseCategory` enum: `stretch` / `strength` / `cardio` / `relaxation` / `mobility`. Adaptive Scheduler에서 피로도 높을 때 `stretch`/`relaxation` 우선 추천에 필수. |
-| `target_muscle` | TEXT | NOT NULL | 대상 근육군 (쉼표 구분). 예: `"neck,shoulder"` |
-| `difficulty_level` | INTEGER | NOT NULL, CHECK(1~3) | 난이도. 1=낮음, 2=보통, 3=높음. |
-| `contraindications` | TEXT | DEFAULT '' | **금기 부위** (쉼표 구분). `BodyPart` enum 값만 사용. 사용자의 `pain_points`와 교집합이 있으면 해당 동작은 **Pain-Filter에 의해 제외**됨. |
-| `modified_ex_id` | TEXT | FK → self | **난이도 하향 대체 동작**의 ex_id. 사용자가 "너무 어려워요" 버튼 클릭 시 이 동작으로 전환. NULL이면 대체 동작 없음. |
-| `suitable_scenes` | TEXT | NOT NULL | 적합 장소 (쉼표 구분). `Scene` enum: `office` / `home` / `outdoor`. |
-| `default_sets` | INTEGER | DEFAULT 1 | 기본 세트 수. Adaptive Scheduler가 피로도에 따라 감소 가능. |
-| `default_reps` | INTEGER | DEFAULT 1 | 세트당 기본 반복 횟수. |
-| `duration_sec` | INTEGER | NOT NULL | 1회 동작 소요 시간 (초). 루틴 생성 시 시간 합산에 사용. |
-| `description` | TEXT | | 동작 간단 설명 (1~2문장). UI에서 GIF 아래에 표시. |
-| `instruction_steps` | TEXT | | 단계별 안내. **JSON 배열 형식** 문자열. 예: `'["1단계...", "2단계..."]'`. 백엔드에서 `json.loads()`로 파싱. |
-| `media_path` | TEXT | | 로컬 GIF/동영상 상대 경로. 예: `'media/ex_001.gif'` |
+| 컬럼                  | 타입      | 제약                   | 설명                                                                                                                                                                 |
+| ------------------- | ------- | -------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `ex_id`             | TEXT    | PK                   | 동작 고유 ID. 예: `'EX_001'`                                                                                                                                            |
+| `name`              | TEXT    | NOT NULL             | 동작 이름. 예: `'목 전방 굴곡 스트레칭'`                                                                                                                                         |
+| `category`          | TEXT    | NOT NULL, CHECK      | **운동 분류**. `ExerciseCategory` enum: `stretch` / `strength` / `cardio` / `relaxation` / `mobility`. Adaptive Scheduler에서 피로도 높을 때 `stretch`/`relaxation` 우선 추천에 필수. |
+| `target_muscle`     | TEXT    | NOT NULL             | 대상 근육군 (쉼표 구분). 예: `"neck,shoulder"`                                                                                                                               |
+| `difficulty_level`  | INTEGER | NOT NULL, CHECK(1~3) | 난이도. 1=낮음, 2=보통, 3=높음.                                                                                                                                             |
+| `contraindications` | TEXT    | DEFAULT ''           | **금기 부위** (쉼표 구분). `BodyPart` enum 값만 사용. 사용자의 `pain_points`와 교집합이 있으면 해당 동작은 **Pain-Filter에 의해 제외**됨.                                                             |
+| `modified_ex_id`    | TEXT    | FK → self            | **난이도 하향 대체 동작**의 ex_id. 사용자가 "너무 어려워요" 버튼 클릭 시 이 동작으로 전환. NULL이면 대체 동작 없음.                                                                                        |
+| `suitable_scenes`   | TEXT    | NOT NULL             | 적합 장소 (쉼표 구분). `Scene` enum: `office` / `home` / `outdoor`.                                                                                                        |
+| `default_sets`      | INTEGER | DEFAULT 1            | 기본 세트 수. Adaptive Scheduler가 피로도에 따라 감소 가능.                                                                                                                        |
+| `default_reps`      | INTEGER | DEFAULT 1            | 세트당 기본 반복 횟수.                                                                                                                                                      |
+| `duration_sec`      | INTEGER | NOT NULL             | 1회 동작 소요 시간 (초). 루틴 생성 시 시간 합산에 사용. 1세트의 순수 실행 시간 (휴식 제외). 자세한 시간 계산 규칙은 요구사항 분석서 §7.1 BR-01 참조.                                                                   |
+| `description`       | TEXT    |                      | 동작 간단 설명 (1~2문장). UI에서 GIF 아래에 표시.                                                                                                                                 |
+| `instruction_steps` | TEXT    |                      | 단계별 안내. **JSON 배열 형식** 문자열. 예: `'["1단계...", "2단계..."]'`. 백엔드에서 `json.loads()`로 파싱.                                                                                 |
+| `media_path`        | TEXT    |                      | 로컬 GIF/동영상 상대 경로. 예: `'media/ex_001.gif'`                                                                                                                          |
 
 **modified_ex_id 관계도** (자기 참조 FK):
 
