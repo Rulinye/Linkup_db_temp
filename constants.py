@@ -75,9 +75,8 @@ class ExerciseCategory(LabeledEnum):
 # Scenes
 # ------------------------------------------------------------------
 class Scene(LabeledEnum):
-    OFFICE  = ("office",  "사무실")
-    HOME    = ("home",    "집")
-    OUTDOOR = ("outdoor", "야외")
+    OFFICE = ("office", "사무실")
+    HOME   = ("home",   "집")
 
 
 # ------------------------------------------------------------------

@@ -8,7 +8,7 @@
 --                knee, ankle, hip, elbow, eye
 --   Categories : stretch, strength, cardio, relaxation, mobility
 --   Difficulty : 1 (low) / 2 (medium) / 3 (high)
---   Scenes     : office, home, outdoor
+--   Scenes     : office, home
 --
 -- modified_ex_id references (easier alternatives):
 --   EX_005 -> EX_003    EX_009 -> EX_007    EX_010 -> EX_008
@@ -500,7 +500,7 @@ INSERT INTO Exercise_Library VALUES
 ('EX_036',
  '점핑잭 (Jumping Jacks)',
  'cardio', 'shoulder,knee,ankle', 2,
- 'knee,ankle', 'EX_035', 'home,outdoor',
+ 'knee,ankle', 'EX_035', 'home',
  3, 15, 60,
  '전신 유산소 운동. 무릎이나 발목 통증 시 주의.',
  '["바르게 서서 양팔을 옆에 내립니다",
@@ -512,7 +512,7 @@ INSERT INTO Exercise_Library VALUES
 ('EX_037',
  '하이 니 마치 (High Knee March)',
  'cardio', 'knee,hip', 2,
- 'knee', 'EX_035', 'home,outdoor',
+ 'knee', 'EX_035', 'home',
  2, 1, 60,
  '무릎을 높이 올리며 걸어 심박수를 높입니다.',
  '["제자리에서 무릎을 골반 높이 이상으로 올립니다",

@@ -274,7 +274,7 @@ App_Settings (독립 테이블, FK 없음)
 | `difficulty_level`  | INTEGER | NOT NULL, CHECK(1~3) | 난이도. 1=낮음, 2=보통, 3=높음.                                                                                                                                             |
 | `contraindications` | TEXT    | DEFAULT ''           | **금기 부위** (쉼표 구분). `BodyPart` enum 값만 사용. 사용자의 `pain_points`와 교집합이 있으면 해당 동작은 **Pain-Filter에 의해 제외**됨.                                                             |
 | `modified_ex_id`    | TEXT    | FK → self            | **난이도 하향 대체 동작**의 ex_id. 사용자가 "너무 어려워요" 버튼 클릭 시 이 동작으로 전환. NULL이면 대체 동작 없음.                                                                                        |
-| `suitable_scenes`   | TEXT    | NOT NULL             | 적합 장소 (쉼표 구분). `Scene` enum: `office` / `home` / `outdoor`.                                                                                                        |
+| `suitable_scenes`   | TEXT    | NOT NULL             | 적합 장소 (쉼표 구분). `Scene` enum: `office` / `home`.                                                                                                                   |
 | `default_sets`      | INTEGER | DEFAULT 1            | 기본 세트 수. Adaptive Scheduler가 피로도에 따라 감소 가능.                                                                                                                        |
 | `default_reps`      | INTEGER | DEFAULT 1            | 세트당 기본 반복 횟수.                                                                                                                                                      |
 | `duration_sec`      | INTEGER | NOT NULL             | 1회 동작 소요 시간 (초). 루틴 생성 시 시간 합산에 사용. 1세트의 순수 실행 시간 (휴식 제외). 자세한 시간 계산 규칙은 요구사항 분석서 §7.1 BR-01 참조.                                                                   |
@@ -391,7 +391,7 @@ EX_037 (하이 니, 난이도2)   ──→ EX_035 (제자리 걷기, 난이도1
 |-------------|------|---------|
 | `BodyPart` | pain_points, contraindications, target_muscle | neck, shoulder, upper_back, lower_back, wrist, knee, ankle, hip, elbow, eye |
 | `ExerciseCategory` | category | stretch, strength, cardio, relaxation, mobility |
-| `Scene` | suitable_scenes, manual_scene | office, home, outdoor |
+| `Scene` | suitable_scenes, manual_scene | office, home |
 | `JobType` | job_type | it, office_worker, student, manual_labor, other |
 
 ### 사용 예시
