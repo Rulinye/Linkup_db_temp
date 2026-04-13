@@ -23,7 +23,7 @@ CREATE TABLE IF NOT EXISTS User_Profile (
     pain_points            TEXT    DEFAULT '',
     fitness_level          INTEGER NOT NULL DEFAULT 3
                            CHECK (fitness_level >= 1 AND fitness_level <= 5),
-    preferred_duration_min INTEGER DEFAULT 10,
+    preferred_duration_min INTEGER DEFAULT 15,
     daily_step_goal        INTEGER DEFAULT 8000,
     reminder_interval_min  INTEGER DEFAULT 60,
     created_at             TEXT    DEFAULT (datetime('now','localtime')),

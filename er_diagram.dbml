@@ -12,7 +12,7 @@ Table User_Profile {
   job_type              text    [not null, default: 'student', note: 'Enum: it/office_worker/student/manual_labor/other']
   pain_points           text    [default: '', note: '통증 부위 (쉼표 구분). Enum BodyPart 값만 허용']
   fitness_level         integer [not null, default: 3, note: '체력 자가평가 1(매우약함)~5(매우강함)']
-  preferred_duration_min integer [default: 10, note: '1회 운동 선호 시간 (분)']
+  preferred_duration_min integer [default: 15, note: '1회 운동 선호 시간 (분)']
   daily_step_goal       integer [default: 8000, note: '일일 목표 걸음 수']
   reminder_interval_min integer [default: 60, note: '장시간 앉아있기 알림 간격 (분)']
   created_at            text    [note: '생성 시각']

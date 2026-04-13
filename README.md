@@ -133,7 +133,7 @@ erDiagram
         TEXT job_type "NOT NULL"
         TEXT pain_points "comma-separated BodyPart"
         INTEGER fitness_level "1~5"
-        INTEGER preferred_duration_min "DEFAULT 10"
+        INTEGER preferred_duration_min "DEFAULT 15"
         INTEGER daily_step_goal "DEFAULT 8000"
         INTEGER reminder_interval_min "DEFAULT 60"
         TEXT created_at
@@ -241,21 +241,21 @@ App_Settings (독립 테이블, FK 없음)
 
 > 로컬 단일 사용자 앱이므로, 이 테이블에는 항상 **1개의 행만 존재**합니다 (id=1).
 
-| 컬럼 | 타입 | 제약 | 설명 |
+| 컬럼 | 타입 | 제약                          | 설명 |
 |------|------|------|------|
-| `id` | INTEGER | PK, DEFAULT 1 | 고정값 1 |
-| `nickname` | TEXT | | 사용자 닉네임 (UI 표시용) |
-| `birth_year` | INTEGER | | 출생 연도. 연령대별 운동 안전 기준 적용 가능. |
-| `height_cm` | REAL | | 키 (cm). 선택 입력. |
-| `weight_kg` | REAL | | 체중 (kg). 선택 입력. BMI는 백엔드에서 계산 (DB 미저장). |
+| `id` | INTEGER | PK, DEFAULT 1               | 고정값 1 |
+| `nickname` | TEXT |                             | 사용자 닉네임 (UI 표시용) |
+| `birth_year` | INTEGER |                             | 출생 연도. 연령대별 운동 안전 기준 적용 가능. |
+| `height_cm` | REAL |                             | 키 (cm). 선택 입력. |
+| `weight_kg` | REAL |                             | 체중 (kg). 선택 입력. BMI는 백엔드에서 계산 (DB 미저장). |
 | `job_type` | TEXT | NOT NULL, DEFAULT 'student' | 직업 유형. `JobType` enum 값만 허용. |
-| `pain_points` | TEXT | DEFAULT '' | **핵심 필드**. 현재 통증 부위 목록 (쉼표 구분). `BodyPart` enum 값만 허용. 예: `"neck,lower_back,wrist"` |
-| `fitness_level` | INTEGER | NOT NULL, CHECK(1~5) | 체력 자가평가. 1=매우 약함, 5=매우 강함. 초기 추천 난이도 결정. |
-| `preferred_duration_min` | INTEGER | DEFAULT 10 | 1회 운동 선호 시간 (분). 루틴 생성 시 총 시간 제어용. |
-| `daily_step_goal` | INTEGER | DEFAULT 8000 | 일일 목표 걸음 수. 피로도 계산에 활용. |
-| `reminder_interval_min` | INTEGER | DEFAULT 60 | 장시간 좌식 알림 간격 (분). PyQt `QTimer` 연동. |
-| `created_at` | TEXT | DEFAULT datetime | 계정 생성 시각 |
-| `updated_at` | TEXT | DEFAULT datetime | 최종 수정 시각. **트리거로 자동 갱신**됨. |
+| `pain_points` | TEXT | DEFAULT ''                  | **핵심 필드**. 현재 통증 부위 목록 (쉼표 구분). `BodyPart` enum 값만 허용. 예: `"neck,lower_back,wrist"` |
+| `fitness_level` | INTEGER | NOT NULL, CHECK(1~5)        | 체력 자가평가. 1=매우 약함, 5=매우 강함. 초기 추천 난이도 결정. |
+| `preferred_duration_min` | INTEGER | DEFAULT 15                  | 1회 운동 선호 시간 (분). 루틴 생성 시 총 시간 제어용. |
+| `daily_step_goal` | INTEGER | DEFAULT 8000                | 일일 목표 걸음 수. 피로도 계산에 활용. |
+| `reminder_interval_min` | INTEGER | DEFAULT 60                  | 장시간 좌식 알림 간격 (분). PyQt `QTimer` 연동. |
+| `created_at` | TEXT | DEFAULT datetime            | 계정 생성 시각 |
+| `updated_at` | TEXT | DEFAULT datetime            | 최종 수정 시각. **트리거로 자동 갱신**됨. |
 
 **프론트엔드 참고**: 앱 최초 실행 시 온보딩 화면에서 `job_type`, `pain_points`, `fitness_level`, `preferred_duration_min`을 입력받아야 합니다.
 

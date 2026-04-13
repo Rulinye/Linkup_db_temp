@@ -12,10 +12,10 @@
 
 | 이름  | 역할               |
 | --- | ---------------- |
-| 김이경 |                  |
-| 김동민 |                  |
+| 김이경 | PM, DBMS 설계      |
+| 김동민 | 프론트엔드 구현         |
 | 딩 정 | Database 설계 및 관리 |
-| 정성용 |                  |
+| 정성용 | UI 디자인, 프론트엔드 구현 |
 
 
 ---
@@ -74,7 +74,7 @@
 
 - 하루 10시간 이상 모니터 앞 근무. 최근 거북목과 손목 통증으로 병원 방문.
 - "체육관에 등록했지만 야근 때문에 두 달째 안 가고 있다."
-- 필요한 것: **퇴근 후 집에서 10분, 손목·목에 부담 없는 루틴.**
+- 필요한 것: **퇴근 후 집에서 15분, 손목·목에 부담 없는 루틴.**
 
 #### 페르소나 B — 이서연 (22세, 대학생)
 
@@ -126,7 +126,7 @@ WHO, 건강보험심사평가원, JAMA Internal Medicine, ACSM, KISTI 등의 공
 
 → 4명의 경험을 종합하여 도출된 주요 합의점:
 
-1. **운동 시간**: "한 번에 30분 이상은 비현실적이다. 10분 이내라야 매일 할 수 있다." → `preferred_duration_min` 기본값 10분으로 설정 (FR-16)
+1. **운동 시간**: "한 번에 30분 이상은 비현실적이다. 15분 이내라야 매일 할 수 있다." → `preferred_duration_min` 기본값 15분으로 설정 (FR-16)
 2. **입력 부담**: "매일 컨디션을 일일이 입력하라면 며칠 안에 그만두게 된다." → Daily_Log 입력 필드를 4개로 최소화하고, 입력을 건너뛰어도 기본값으로 시작 가능하도록 설계 (FR-09)
 3. **부상 경험**: 4명 중 2명이 유튜브 홈트 영상을 따라 하다 통증·부상을 경험. → Pain-Filter Engine을 Critical 우선순위로 설정 (FR-10)
 4. **즉시 조정 욕구**: "운동 도중에 너무 어려우면 멈추거나 포기하게 된다." → 즉시 난이도 하향 기능을 핵심 기능으로 채택 (FR-18)
@@ -324,7 +324,7 @@ session_total_sec = Σ(exercise_net_sec for each exercise in routine)
 ```
 
 - **휴식 시간(rest)과 동작 전환 시간(transition)은 본 계산에서 제외됩니다.**
-- 근거: 본 앱의 주요 카테고리(`stretch`, `relaxation`, `mobility`)는 동작 간 별도의 휴식 없이 연속 수행하는 것이 표준입니다. `strength`, `cardio` 카테고리에서도 본 앱은 짧은(10분 이내) 루틴을 전제로 하므로 명시적 휴식 구간을 생략합니다.
+- 근거: 본 앱의 주요 카테고리(`stretch`, `relaxation`, `mobility`)는 동작 간 별도의 휴식 없이 연속 수행하는 것이 표준입니다. `strength`, `cardio` 카테고리에서도 본 앱은 짧은(15분 이내) 루틴을 전제로 하므로 명시적 휴식 구간을 생략합니다.
 - 동작 전환에 필요한 UI 버퍼(예: "다음 동작 준비... 3, 2, 1")는 사용자 경험을 위한 표시일 뿐이며, 시간 계산 및 `preferred_duration_min` 검증에는 포함되지 않습니다.
 
 #### BR-03. FR-16 검증 공식
@@ -385,21 +385,21 @@ session_total_sec = Σ(duration_sec × default_sets + rest_sec × (default_sets 
 
 ### 8.4 테스트 케이스 작성 예시
 
-| TC ID | 검증 요구사항 | 입력 | 기대 결과 | 기법 |
-|-------|--------------|------|----------|------|
-| TC-01 | FR-10 (Pain-Filter) | `pain_points="neck,wrist"`, 모든 동작 | 결과 루틴에 `contraindications`가 `neck` 또는 `wrist`를 포함한 동작이 0개 | 결정 테이블 |
-| TC-02 | FR-10 | `pain_points=""` (통증 없음) | 모든 동작이 후보군에 포함됨 | 동등 분할 (빈 입력) |
-| TC-03 | FR-12 | 통증 부위 `"back"`, 동작의 금기 부위 `"upper_back"` | 두 값은 **다른** 부위로 처리되어야 함 (false positive 방지) | 예외 케이스 |
-| TC-04 | FR-13 | `fatigue_score=8` | 결과에 `cardio`, `strength` 카테고리가 0개 | 경계값 (7 = 임계) |
-| TC-05 | FR-13 | `fatigue_score=7` | 결과에 `cardio`, `strength` 카테고리가 0개 (경계 포함 검증) | 경계값 |
-| TC-06 | FR-13 | `fatigue_score=6` | `strength` 동작이 결과에 포함될 수 있음 | 경계값 (-1) |
-| TC-07 | FR-16, BR-03 | `preferred_duration_min=10`, 동작 풀 다수 | BR-02 공식 기준 `session_total_sec = Σ(duration_sec × default_sets) ≤ 600` | 요구사항 기반 |
-| TC-07b | FR-16, BR-04 | 사용자가 운동 도중 2분간 일시정지 후 재개 | `total_duration_sec`(벽시계)는 600초를 초과할 수 있으나, 이는 정상이며 FR-16 위반이 아님 | 경계 케이스 |
-| TC-08 | FR-18 | 사용자가 "너무 어려워요" 클릭 | UI가 `modified_ex_id`로 교체되고 `used_modified=1` 기록 | 시나리오 |
-| TC-09 | FR-21 | 한 세션 완료 | `Workout_Session` 1행 + `Workout_History` N행 INSERT 검증 | 통합 |
-| TC-10 | NFR-01 | 사용자 입력 → 루틴 생성 | 1초 이내 응답 | 성능 |
-| TC-11 | NFR-04 | 모든 네트워크 인터페이스 차단 후 앱 실행 | 정상 동작 | 보안/오프라인 |
-| TC-12 | FR-07 | sleep=4h, step=2000, mood=2 | 피로도 ≥ 7 (페르소나 A 야근 시나리오) | 시나리오 |
+| TC ID  | 검증 요구사항             | 입력                                       | 기대 결과                                                                  | 기법           |
+| ------ | ------------------- | ---------------------------------------- | ---------------------------------------------------------------------- | ------------ |
+| TC-01  | FR-10 (Pain-Filter) | `pain_points="neck,wrist"`, 모든 동작        | 결과 루틴에 `contraindications`가 `neck` 또는 `wrist`를 포함한 동작이 0개              | 결정 테이블       |
+| TC-02  | FR-10               | `pain_points=""` (통증 없음)                 | 모든 동작이 후보군에 포함됨                                                        | 동등 분할 (빈 입력) |
+| TC-03  | FR-12               | 통증 부위 `"back"`, 동작의 금기 부위 `"upper_back"` | 두 값은 **다른** 부위로 처리되어야 함 (false positive 방지)                            | 예외 케이스       |
+| TC-04  | FR-13               | `fatigue_score=8`                        | 결과에 `cardio`, `strength` 카테고리가 0개                                      | 경계값 (7 = 임계) |
+| TC-05  | FR-13               | `fatigue_score=7`                        | 결과에 `cardio`, `strength` 카테고리가 0개 (경계 포함 검증)                           | 경계값          |
+| TC-06  | FR-13               | `fatigue_score=6`                        | `strength` 동작이 결과에 포함될 수 있음                                            | 경계값 (-1)     |
+| TC-07  | FR-16, BR-03        | `preferred_duration_min=15`, 동작 풀 다수     | BR-02 공식 기준 `session_total_sec = Σ(duration_sec × default_sets) ≤ 900` | 요구사항 기반      |
+| TC-07b | FR-16, BR-04        | 사용자가 운동 도중 2분간 일시정지 후 재개                 | `total_duration_sec`(벽시계)는 900초를 초과할 수 있으나, 이는 정상이며 FR-16 위반이 아님       | 경계 케이스       |
+| TC-08  | FR-18               | 사용자가 "너무 어려워요" 클릭                        | UI가 `modified_ex_id`로 교체되고 `used_modified=1` 기록                        | 시나리오         |
+| TC-09  | FR-21               | 한 세션 완료                                  | `Workout_Session` 1행 + `Workout_History` N행 INSERT 검증                  | 통합           |
+| TC-10  | NFR-01              | 사용자 입력 → 루틴 생성                           | 1초 이내 응답                                                               | 성능           |
+| TC-11  | NFR-04              | 모든 네트워크 인터페이스 차단 후 앱 실행                  | 정상 동작                                                                  | 보안/오프라인      |
+| TC-12  | FR-07               | sleep=4h, step=2000, mood=2              | 피로도 ≥ 7 (페르소나 A 야근 시나리오)                                               | 시나리오         |
 
 > 전체 테스트 케이스는 추후 별도의 `test_cases.md` 문서로 관리하며, 본 문서는 대표 사례만 포함합니다.
 
