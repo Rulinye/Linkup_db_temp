@@ -1,0 +1,15 @@
+# ignore SQLite file
+*.db
+*.sqlite3
+
+# python trash
+__pycache__/
+*.pyc
+
+.DS_Store
+
+# local-only supplementary materials (planning docs, ppt, pdf, references)
+sup/
+
+# local tool state
+.claude/
