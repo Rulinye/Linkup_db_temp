@@ -2,9 +2,8 @@
 
 본 문서는 LinkUp 프로젝트의 **시스템 함수 목록**과 각 함수가 도출된 **비기능적 요구사항(NFR)** 매핑을 정리합니다.
 
-- 작성: 딩정 (DB 담당)
 - 날짜: 2026-05-17
-- 상태: **초안** — 성용 검토 후 확정
+- 상태: **초안**
 - 구현 위치: [repositories/](../repositories/), [services/](../services/)
 - 데이터 구조 (DTO): [models.py](../models.py)
 

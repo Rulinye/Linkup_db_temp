@@ -14,7 +14,7 @@ Authoring rules:
 
 ### Background
 
-Adopted 성용's review feedback. Instead of a "daily goal" model, switched to **"user inputs available time each session; daily total = simple sum of all chunks"**. This better matches the meeting's "3~10 min split & accumulate" intent.
+Adopted review feedback. Instead of a "daily goal" model, switched to **"user inputs available time each session; daily total = simple sum of all chunks"**. This better matches the meeting's "3~10 min split & accumulate" intent.
 
 ### Schema Changes
 
@@ -106,7 +106,7 @@ Total functions: **31** (UserProfile 3 + DailyLog 3 + WorkoutSession 4 + Workout
 
 ### New Files
 
-- `docs/FUNCTION_LIST.md` — 31 functions + NFR mapping (for 성용's review)
+- `docs/FUNCTION_LIST.md` — 31 functions + NFR mapping (for review)
 - `repositories/app_settings_repo.py` — `AppSettingsRepo` skeleton
 
 ### Impact
@@ -129,8 +129,6 @@ After execution, restore from DB backup.
 | Field | Value |
 |---|---|
 | Status | **Planned** — `schema_v2.sql` not yet executed |
-| Author | Ding-jeong (딩정) |
-| Participants | Ding-jeong (DB) / Seong-yong / Dong-min (UI mockups) |
 | Confirmation date | After team meeting on 2026-05-17 |
 | Previous version | v1 ([schema.sql](../schema.sql)) |
 | Apply command | `sqlite3 linkup.db < schema_v2.sql` (after meeting) |
@@ -144,18 +142,8 @@ Three inputs drove this revision in May 2026:
 3. **Team meeting decisions** — Unified mental condition score, no server/login, equipment included (see § 3 below)
 4. **External exercise library prep** — Reviewing yuhonas/free-exercise-db and others
 
-### 3. Team Meeting Decisions (excerpt)
+### 3. Team Meeting Decisions
 
-> **A**: Since Ding-jeong is going without login/server, can you adjust the DB to match?
->
-> **A**: Mental condition is very subjective. So how about including sleep time too, with 10 being the best, and rating today on a 0–10 scale? Quantify it that way.
->
-> **A**: Update the INPUT scenario to include the equipment field.
->
-> **B**: To confirm — we're adding mental condition data, right?
-> **A**: Yes, sleep time included, all merged into one score!
-
-**Interpretation:**
 - No server/login → Current single-user local SQLite design unchanged.
 - Sleep + mood + stress → Merged into a **single score** `mental_condition_score` 0–10 (10 = best).
 - Equipment → Add `User_Profile.available_equipment` column.
