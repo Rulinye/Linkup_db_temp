@@ -14,7 +14,7 @@
 
 - **저장**: 한 번 운동할 때마다 `Workout_Session` 한 행 생성 (chunk 단위)
 - **표시**: 일별 집계 (SUM, GROUP BY date)
-- **알고리즘**: 사용자는 「하루 목표 분」만 설정. routine 은 남은 분 (= 목표 − 누적) 기준으로 자동 생성
+- **알고리즘**: 사용자가 운동 시작 시 「지금 X 분」 입력 → 그 시간에 맞는 routine 생성. 하루 누적은 각 chunk 의 단순 합산
 
 ---
 
@@ -39,22 +39,20 @@
 | 15 | ExerciseLibraryRepo | `get_modified(ex_id) -> Optional[ExerciseLibraryItem]` | 「너무 어려워요」 시 더 쉬운 대체 동작 조회 | 사용성 / 개인화 | INPUT.md 5 |
 | 16 | ExerciseLibraryRepo | `list_all() -> List[ExerciseLibraryItem]` | 전체 동작 목록 | 응답성 | - |
 | 17 | ExerciseLibraryRepo | `query(category, scene, max_difficulty, avoid_body_parts) -> List` | routine 알고리즘용 필터 조회 | 개인화 / 응답성 | - |
-| 18 | StatsRepo | `recent_stats(days=7) -> RecentStats` | 최근 N일 통계 (완료율 / 연속일수) | 사용성 / 정확성 | 완료 = 「하루 누적 분 ≥ 목표」 |
+| 18 | StatsRepo | `recent_stats(days=7) -> RecentStats` | 최근 N일 통계 (운동 일수 / 연속일수 / 총 chunk / 총 분) | 사용성 / 정확성 | - |
 | 19 | StatsRepo | `daily_history(limit=50) -> List[DailyHistorySummary]` | 과거 일별 운동 요약 목록 | 응답성 / 사용성 | History 화면 |
 | 20 | StatsRepo | `daily_total_minutes(date) -> int` | 특정 날짜의 누적 운동 분 | 정확성 / 사용성 | - |
-| 21 | StatsRepo | `daily_goal_met(date) -> bool` | 특정 날짜 목표 달성 여부 | 정확성 / 사용성 | - |
-| 22 | StatsRepo | `list_today_chunks(date) -> List[WorkoutSession]` | 오늘 모든 chunk 시간순 (Dashboard 용) | 사용성 | 「10:00 5분」 표시 |
-| 23 | AppSettingsRepo | `get(key) -> Optional[str]` | key/value 조회 (raw) | 응답성 | - |
-| 24 | AppSettingsRepo | `set(key, value) -> None` | key/value UPSERT (raw) | 데이터 영속성 | - |
-| 25 | AppSettingsRepo | `is_onboarding_completed() -> bool` | onboarding 완료 여부 (편의) | 사용성 | - |
-| 26 | AppSettingsRepo | `mark_onboarding_completed() -> None` | onboarding 완료 표시 | 데이터 영속성 | - |
-| 27 | AppSettingsRepo | `get_theme() -> str` | 현재 테마 조회 (편의) | 사용성 | - |
-| 28 | AppSettingsRepo | `get_language() -> str` | 현재 언어 조회 (편의) | 사용성 | - |
-| 29 | AppSettingsRepo | `db_version() -> str` | 현재 DB 스키마 버전 | 유지보수성 | - |
-| 30 | RoutineService | `generate(date) -> List[ExerciseLibraryItem]` | 오늘 남은 분에 맞춰 routine 생성 (사용자 입력 없이 daily_remaining 기준 자동 계산) | 개인화 / 응답성 | - |
-| 31 | RoutineService | `get_daily_remaining(date) -> int` | 오늘 목표까지 남은 분 | 사용성 / 정확성 | - |
+| 21 | StatsRepo | `list_today_chunks(date) -> List[WorkoutSession]` | 오늘 모든 chunk 시간순 (Dashboard 용) | 사용성 | 「10:00 5분」 표시 |
+| 22 | AppSettingsRepo | `get(key) -> Optional[str]` | key/value 조회 (raw) | 응답성 | - |
+| 23 | AppSettingsRepo | `set(key, value) -> None` | key/value UPSERT (raw) | 데이터 영속성 | - |
+| 24 | AppSettingsRepo | `is_onboarding_completed() -> bool` | onboarding 완료 여부 (편의) | 사용성 | - |
+| 25 | AppSettingsRepo | `mark_onboarding_completed() -> None` | onboarding 완료 표시 | 데이터 영속성 | - |
+| 26 | AppSettingsRepo | `get_theme() -> str` | 현재 테마 조회 (편의) | 사용성 | - |
+| 27 | AppSettingsRepo | `get_language() -> str` | 현재 언어 조회 (편의) | 사용성 | - |
+| 28 | AppSettingsRepo | `db_version() -> str` | 현재 DB 스키마 버전 | 유지보수성 | - |
+| 29 | RoutineService | `generate(date, available_min) -> List[ExerciseLibraryItem]` | 사용자가 입력한 가용 분에 맞는 routine 생성 | 개인화 / 응답성 | 사용자가 매번 「지금 X분」 입력 |
 
-총: **31개 함수**
+총: **29개 함수**
 
 ---
 
@@ -62,12 +60,12 @@
 
 | NFR | 이 NFR 때문에 생긴 함수들 |
 |---|---|
-| **사용성 (Usability)** | `has_profile`, `get_today`, `update_status`, `get_modified`, `recent_stats`, `daily_total_minutes`, `daily_goal_met`, `list_today_chunks`, `list_by_date`, `daily_history`, `get_daily_remaining`, `is_onboarding_completed`, `get_theme`, `get_language` |
+| **사용성 (Usability)** | `has_profile`, `get_today`, `update_status`, `get_modified`, `recent_stats`, `daily_total_minutes`, `list_today_chunks`, `list_by_date`, `daily_history`, `is_onboarding_completed`, `get_theme`, `get_language` |
 | **데이터 영속성 (Persistence)** | `save`, `upsert`, `start`, `end`, `create`, `AppSettings.set`, `mark_onboarding_completed` |
 | **데이터 무결성 (Integrity)** | `save`, `update_status` |
 | **응답성 (Responsiveness)** | `get`, `get_today`, `list_*`, `query`, `start`, `generate`, `AppSettings.get` 등 거의 모든 read 함수 |
 | **개인화 (Personalization)** | `query`, `generate`, `get_modified` |
-| **정확성 (Accuracy)** | `end` (TRG-2 자동 계산), `recent_stats`, `daily_total_minutes`, `daily_goal_met`, `get_daily_remaining` |
+| **정확성 (Accuracy)** | `end` (TRG-2 자동 계산), `recent_stats`, `daily_total_minutes` |
 | **유지보수성 (Maintainability)** | `db_version` |
 
 ---

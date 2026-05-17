@@ -10,6 +10,50 @@
 
 ---
 
+## v2.2 — 2026-05-17 (계획중 / Planned, 미실행)
+
+### 변경 배경
+
+성용 검토 피드백 반영. 「하루 목표 분」 방식보다 **「매번 사용자가 입력한 시간만큼 routine 생성 + 하루치는 단순 합산」** 이 회의 결정 「3~10분 쪼개서 합산」 의도에 더 부합한다고 판단.
+
+### Schema 변경
+
+| 테이블 | 변경 |
+|---|---|
+| `User_Profile` | **삭제** `daily_total_goal_min` (v2.1 에서 추가했던 컬럼) |
+
+### Constants 변경
+
+- **삭제**: `DAILY_GOAL_MIN`, `DAILY_GOAL_MAX`, `DAILY_GOAL_DEFAULT`
+
+### DTO (`models.py`) 변경
+
+- `UserProfile.daily_total_goal_min` **삭제**
+
+### DAO / Service 변경
+
+| 변경 | 내용 |
+|---|---|
+| `RoutineService.generate(date)` → `generate(date, available_min)` | 사용자가 매번 입력한 분 수를 받음 |
+| `RoutineService.get_daily_remaining()` | **삭제** (daily goal 없음) |
+| `StatsRepo.daily_goal_met()` | **삭제** (daily goal 없음) |
+| `StatsRepo` `__init__` | `UserProfileRepo` 의존성 제거 (v2.1 fix 가 불필요해짐) |
+| `RecentStats` | `completion_rate` → `active_days` 로 변경 (운동 한 적 있는 날 수) |
+| `DailyHistorySummary` | `goal_met` 필드 삭제 |
+
+함수 수: 31개 → **29개**.
+
+### 영향 범위
+
+- **파괴적**: `daily_total_goal_min` 컬럼 삭제 (v2.1 가 미실행이라 실제 데이터 없음, 영향 0)
+- **비파괴적**: 위 외 전부 (SKELETON 단계)
+
+### 롤백
+
+`schema_v2.sql` 미실행 → 롤백 불필요.
+
+---
+
 ## v2.1 — 2026-05-17 (계획중 / Planned, 미실행)
 
 ### 변경 배경

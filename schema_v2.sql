@@ -40,12 +40,6 @@ ALTER TABLE User_Profile ADD COLUMN weekly_frequency INTEGER
     CHECK (weekly_frequency IS NULL
         OR (weekly_frequency >= 1 AND weekly_frequency <= 7));
 
--- 5/17 회의 — chunk 단위 운동 (replaces preferred_duration_min)
--- 하루 목표 운동 분 (5~60, 기본 15)
--- 사용자는 이 값만 설정하면 됨. chunk 길이는 algorithm 이 daily_remaining 기준으로 자동 계산.
-ALTER TABLE User_Profile ADD COLUMN daily_total_goal_min INTEGER DEFAULT 15
-    CHECK (daily_total_goal_min >= 5 AND daily_total_goal_min <= 60);
-
 -- INPUT.md 2-9 — notifications on/off (0 or 1)
 ALTER TABLE User_Profile ADD COLUMN notification_enabled INTEGER DEFAULT 1
     CHECK (notification_enabled IN (0, 1));
@@ -116,7 +110,8 @@ COMMIT;
 --
 --   sqlite3 linkup.db ".schema User_Profile"
 --     expect: fitness_level / preferred_duration_min 없음,
---             daily_total_goal_min / goals / etc. 있음
+--             goals / goal_duration_weeks / weekly_frequency /
+--             avatar_path / notification_enabled / pushup_max / etc. 있음
 --   sqlite3 linkup.db ".schema Daily_Log"
 --     expect: sleep_hours / mood_score / fatigue_score 없음,
 --             mental_condition_score / outdoor_hours / fatigue_by_part 있음

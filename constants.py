@@ -136,11 +136,6 @@ GOAL_DURATION_MAX = 24
 WEEKLY_FREQUENCY_MIN = 1
 WEEKLY_FREQUENCY_MAX = 7
 
-# daily_total_goal_min (하루 목표 운동 분, onboarding 에서 설정)
-DAILY_GOAL_MIN = 5
-DAILY_GOAL_MAX = 60
-DAILY_GOAL_DEFAULT = 15
-
 # fatigue_by_part per-part value range (INPUT.md 3-2-2)
 FATIGUE_PART_MIN = 1
 FATIGUE_PART_MAX = 10

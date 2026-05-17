@@ -52,10 +52,6 @@ class UserProfile:
     goal_duration_weeks: Optional[int] = None                    # INPUT.md 2-3, 1~24
     weekly_frequency: Optional[int] = None                       # INPUT.md 2-4, 1~7
 
-    # 하루 목표 운동 분 (5~60). 사용자는 onboarding 에서 이 값만 설정;
-    # chunk 길이는 routine 알고리즘이 daily_remaining (= goal - 누적분) 기준으로 자동 계산.
-    daily_total_goal_min: int = 15
-
     # Pain points
     pain_points: List[BodyPart] = field(default_factory=list)    # INPUT.md 2-6 (CSV in DB)
 

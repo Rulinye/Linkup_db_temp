@@ -10,6 +10,50 @@ Authoring rules:
 
 ---
 
+## v2.2 — 2026-05-17 (Planned, NOT executed)
+
+### Background
+
+Adopted 성용's review feedback. Instead of a "daily goal" model, switched to **"user inputs available time each session; daily total = simple sum of all chunks"**. This better matches the meeting's "3~10 min split & accumulate" intent.
+
+### Schema Changes
+
+| Table | Change |
+|---|---|
+| `User_Profile` | **DROP** `daily_total_goal_min` (column added in v2.1) |
+
+### Constants Changes
+
+- **Removed**: `DAILY_GOAL_MIN`, `DAILY_GOAL_MAX`, `DAILY_GOAL_DEFAULT`
+
+### DTO (`models.py`) Changes
+
+- `UserProfile.daily_total_goal_min` **removed**
+
+### DAO / Service Changes
+
+| Change | Detail |
+|---|---|
+| `RoutineService.generate(date)` → `generate(date, available_min)` | Takes user-input minutes each session |
+| `RoutineService.get_daily_remaining()` | **Removed** (no daily goal) |
+| `StatsRepo.daily_goal_met()` | **Removed** (no daily goal) |
+| `StatsRepo.__init__` | `UserProfileRepo` dependency removed (v2.1 fix no longer needed) |
+| `RecentStats` | `completion_rate` → `active_days` (count of days with any workout) |
+| `DailyHistorySummary` | `goal_met` field removed |
+
+Function count: 31 → **29**.
+
+### Impact
+
+- **Breaking**: `daily_total_goal_min` column dropped (v2.1 was never executed, so no real data lost)
+- **Non-breaking**: everything else (still SKELETON stage)
+
+### Rollback
+
+`schema_v2.sql` never executed → no rollback needed.
+
+---
+
 ## v2.1 — 2026-05-17 (Planned, NOT executed)
 
 ### Background
