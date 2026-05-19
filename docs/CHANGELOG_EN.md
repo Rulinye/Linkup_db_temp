@@ -10,6 +10,46 @@ Authoring rules:
 
 ---
 
+## v2.3 — 2026-05-17 (Planned, NOT executed)
+
+### Background
+
+During NFR-driven re-audit, found several "added without requirement source" items. Cleaning them up.
+
+### Schema Changes
+
+| Table | Change |
+|---|---|
+| `User_Profile` | **DROP** `daily_step_goal` (app doesn't track steps) |
+| `User_Profile` | **DROP** `reminder_interval_min` (INPUT.md 2-9 only asks on/off, not interval) |
+| `Daily_Log` | **DROP** `step_count` (INPUT.md 3-x doesn't ask steps) |
+
+### DTO (`models.py`) Changes
+
+- `UserProfile.daily_step_goal` **removed**
+- `UserProfile.reminder_interval_min` **removed**
+- `DailyLog.step_count` **removed**
+
+### DAO Changes
+
+| Change | Detail |
+|---|---|
+| `AppSettingsRepo.get_theme()` | **Removed** (no theme switching requirement) |
+| `AppSettingsRepo.get_language()` | **Removed** (no multi-language requirement) |
+
+Function count: 29 → **27**.
+
+### Impact
+
+- **Breaking**: 3 columns dropped (default-populated values from v1 lost). v2.x not yet executed, so real impact = 0.
+- **Non-breaking**: 2 DAO methods removed (skeleton stage, no callers).
+
+### Rollback
+
+`schema_v2.sql` not yet executed → no rollback needed.
+
+---
+
 ## v2.2 — 2026-05-17 (Planned, NOT executed)
 
 ### Background

@@ -3,7 +3,7 @@ repositories/app_settings_repo.py
 DAO for the App_Settings table (key-value store).
 
 Wraps low-level key/value access with semantic helper methods for
-the most-used keys (onboarding_completed, theme, language, db_version).
+the most-used keys (onboarding_completed, db_version).
 
 Status: SKELETON.
 """
@@ -39,14 +39,6 @@ class AppSettingsRepo:
 
     def mark_onboarding_completed(self) -> None:
         """Set onboarding_completed = 'true'."""
-        raise NotImplementedError
-
-    def get_theme(self) -> str:
-        """Return current theme (default: 'light')."""
-        raise NotImplementedError
-
-    def get_language(self) -> str:
-        """Return current language code (default: 'ko')."""
         raise NotImplementedError
 
     def db_version(self) -> str:

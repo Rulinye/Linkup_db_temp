@@ -10,6 +10,46 @@
 
 ---
 
+## v2.3 — 2026-05-17 (계획중 / Planned, 미실행)
+
+### 변경 배경
+
+NFR (비기능 요구사항) 기반 재검토 중 발견된 「요구사항에 없는데 추가된 항목」 정리.
+
+### Schema 변경
+
+| 테이블 | 변경 |
+|---|---|
+| `User_Profile` | **DROP** `daily_step_goal` (앱이 걸음 수 미추적) |
+| `User_Profile` | **DROP** `reminder_interval_min` (INPUT.md 2-9 는 알림 on/off 만 묻고 간격 미요구) |
+| `Daily_Log` | **DROP** `step_count` (INPUT.md 3-x 는 걸음 수 미요구) |
+
+### DTO (`models.py`) 변경
+
+- `UserProfile.daily_step_goal` **삭제**
+- `UserProfile.reminder_interval_min` **삭제**
+- `DailyLog.step_count` **삭제**
+
+### DAO 변경
+
+| 변경 | 내용 |
+|---|---|
+| `AppSettingsRepo.get_theme()` | **삭제** (테마 전환 요구 없음) |
+| `AppSettingsRepo.get_language()` | **삭제** (다국어 지원 요구 없음) |
+
+함수 수: 29개 → **27개**.
+
+### 영향 범위
+
+- **파괴적**: 위 3개 컬럼 데이터 손실 (v1 schema 에서 기본값으로 채워진 값들). v2.x 미실행이므로 실제 영향 0.
+- **비파괴적**: DAO 메서드 2개 삭제 (SKELETON 단계라 호출처 없음)
+
+### 롤백
+
+`schema_v2.sql` 미실행 → 롤백 불필요.
+
+---
+
 ## v2.2 — 2026-05-17 (계획중 / Planned, 미실행)
 
 ### 변경 배경

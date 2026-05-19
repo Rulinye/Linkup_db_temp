@@ -24,6 +24,12 @@ ALTER TABLE User_Profile DROP COLUMN fitness_level;
 -- Dropped (5/17 회의): preferred_duration_min → replaced by chunk-based fields below
 ALTER TABLE User_Profile DROP COLUMN preferred_duration_min;
 
+-- Dropped (정리): daily_step_goal — 앱이 걸음 수를 추적하지 않음 (불필요한 v1 잔재)
+ALTER TABLE User_Profile DROP COLUMN daily_step_goal;
+
+-- Dropped (정리): reminder_interval_min — INPUT.md 2-9 는 알림 on/off 만 묻고 간격은 안 묻음
+ALTER TABLE User_Profile DROP COLUMN reminder_interval_min;
+
 -- INPUT.md 1-2 — profile photo (local file path)
 ALTER TABLE User_Profile ADD COLUMN avatar_path TEXT;
 
@@ -67,6 +73,9 @@ ALTER TABLE Daily_Log DROP COLUMN mood_score;
 
 -- Dropped (INPUT.md 3-2-2): single fatigue_score → replaced by per-body-part fatigue_by_part
 ALTER TABLE Daily_Log DROP COLUMN fatigue_score;
+
+-- Dropped (정리): step_count — INPUT.md 3-x 는 걸음 수를 묻지 않음
+ALTER TABLE Daily_Log DROP COLUMN step_count;
 
 -- Team meeting — unified mental condition score 0~10, 10 = best
 -- (covers sleep, mood, stress in one subjective rating)

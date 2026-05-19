@@ -46,12 +46,10 @@
 | 23 | AppSettingsRepo | `set(key, value) -> None` | key/value UPSERT (raw) | 데이터 영속성 | - |
 | 24 | AppSettingsRepo | `is_onboarding_completed() -> bool` | onboarding 완료 여부 (편의) | 사용성 | - |
 | 25 | AppSettingsRepo | `mark_onboarding_completed() -> None` | onboarding 완료 표시 | 데이터 영속성 | - |
-| 26 | AppSettingsRepo | `get_theme() -> str` | 현재 테마 조회 (편의) | 사용성 | - |
-| 27 | AppSettingsRepo | `get_language() -> str` | 현재 언어 조회 (편의) | 사용성 | - |
-| 28 | AppSettingsRepo | `db_version() -> str` | 현재 DB 스키마 버전 | 유지보수성 | - |
-| 29 | RoutineService | `generate(date, available_min) -> List[ExerciseLibraryItem]` | 사용자가 입력한 가용 분에 맞는 routine 생성 | 개인화 / 응답성 | 사용자가 매번 「지금 X분」 입력 |
+| 26 | AppSettingsRepo | `db_version() -> str` | 현재 DB 스키마 버전 | 유지보수성 | - |
+| 27 | RoutineService | `generate(date, available_min) -> List[ExerciseLibraryItem]` | 사용자가 입력한 가용 분에 맞는 routine 생성 | 개인화 / 응답성 | 사용자가 매번 「지금 X분」 입력 |
 
-총: **29개 함수**
+총: **27개 함수**
 
 ---
 
@@ -59,7 +57,7 @@
 
 | NFR | 이 NFR 때문에 생긴 함수들 |
 |---|---|
-| **사용성 (Usability)** | `has_profile`, `get_today`, `update_status`, `get_modified`, `recent_stats`, `daily_total_minutes`, `list_today_chunks`, `list_by_date`, `daily_history`, `is_onboarding_completed`, `get_theme`, `get_language` |
+| **사용성 (Usability)** | `has_profile`, `get_today`, `update_status`, `get_modified`, `recent_stats`, `daily_total_minutes`, `list_today_chunks`, `list_by_date`, `daily_history`, `is_onboarding_completed` |
 | **데이터 영속성 (Persistence)** | `save`, `upsert`, `start`, `end`, `create`, `AppSettings.set`, `mark_onboarding_completed` |
 | **데이터 무결성 (Integrity)** | `save`, `update_status` |
 | **응답성 (Responsiveness)** | `get`, `get_today`, `list_*`, `query`, `start`, `generate`, `AppSettings.get` 등 거의 모든 read 함수 |

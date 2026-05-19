@@ -62,9 +62,7 @@ class UserProfile:
     squat_max: Optional[int] = None
 
     # Misc
-    daily_step_goal: int = 8000
     notification_enabled: bool = True                            # INPUT.md 2-9
-    reminder_interval_min: int = 60
 
     # Timestamps (TEXT 'YYYY-MM-DD HH:MM:SS' in DB)
     created_at: Optional[str] = None
@@ -114,7 +112,6 @@ class DailyLog:
     # Stored as JSON TEXT in DB.
     fatigue_by_part: Dict[BodyPart, int] = field(default_factory=dict)
 
-    step_count: Optional[int] = None
     manual_scene: Optional[Scene] = None
     created_at: Optional[str] = None
 
